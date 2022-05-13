@@ -1,0 +1,4 @@
+*.npy
+/data/*.npy
+*.csv
+/data/*.csv
