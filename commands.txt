@@ -1,0 +1,3 @@
+Execution Commands:
+
+Data: python .\bring_data.py .\age_gender.csv 100 110
