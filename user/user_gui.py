@@ -44,25 +44,25 @@ if __name__ == '__main__':
     def show_result(age, ethnicity, gender):
         #Age:
         label_age = Label(text = 'Age', bg='gray95', fg='Black', width='12', height= '1', font=('Arial', 11, 'bold'))
-        label_age.place(x=120 , y=360)
+        label_age.place(x=130 , y=360)
         
         age = round(age, 0)
         result_age = Label(text = age, bg='gray95', fg='gray60', width='15', height= '1', font=('Arial', 10, 'bold'))
-        result_age.place(x=115 , y=380)
+        result_age.place(x=125 , y=380)
 
         #Ethnicity:
         label_eth = Label(text = 'Ethnicity', bg='gray95', fg='Black', width='12', height= '1', font=('Arial', 11, 'bold'))
-        label_eth.place(x=320 , y=360)
+        label_eth.place(x=330 , y=360)
         
         result_eth = Label(text = ethnicity, bg='gray95', fg='gray60', width='15', height= '1', font=('Arial', 10, 'bold'))
-        result_eth.place(x=315 , y=380)
+        result_eth.place(x=325 , y=380)
 
         #Gender:
         label_gen = Label(text = 'Gender', bg='gray95', fg='Black', width='12', height= '1', font=('Arial', 11, 'bold'))
-        label_gen.place(x=520 , y=360)
+        label_gen.place(x=530 , y=360)
   
         result_gen = Label(text = gender, bg='gray95', fg='gray60', width='15', height= '1', font=('Arial', 10, 'bold'))
-        result_gen.place(x=515 , y=380)
+        result_gen.place(x=525 , y=380)
 
     def get_prediction():
         url = image_info.get()
@@ -117,12 +117,12 @@ if __name__ == '__main__':
     image_entry.place(x=50 , y=240)
 
     ## Button to Execute
-    script_button= Button(formulario, text='Run', width= '15', height='2' , command = get_prediction, fg='white', bg=from_rgb(((23, 50, 104))), font=('Arial', 10, 'bold'), activeforeground=from_rgb(((23, 50, 104))))
-    script_button.place(x=500 , y=240)
+    script_button= Button(formulario, text='Run', width= '25', height='2' , command = get_prediction, fg='white', bg=from_rgb(((23, 50, 104))), font=('Arial', 10, 'bold'), activeforeground=from_rgb(((23, 50, 104))))
+    script_button.place(x=500 , y=230)
 
     ## Button to Show Image
-    image_button= Button(formulario, text='Show Image', width= '15', height='2' , command = show_image, fg='white', bg=from_rgb(((23, 50, 104))), font=('Arial', 10, 'bold'), activeforeground=from_rgb(((23, 50, 104))))
-    image_button.place(x=500 , y=160)
+    image_button= Button(formulario, text='Show Image', width= '25', height='2' , command = show_image, fg='white', bg=from_rgb(((23, 50, 104))), font=('Arial', 10, 'bold'), activeforeground=from_rgb(((23, 50, 104))))
+    image_button.place(x=500 , y=150)
 
     def refresh():
         formulario.update()
