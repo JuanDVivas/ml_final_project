@@ -1,3 +1,4 @@
+from configparser import Interpolation
 from tkinter import *
 import tkinter.messagebox
 from PIL import ImageTk, Image
@@ -10,6 +11,7 @@ except ImportError:
     from tkinter import ttk
 import sys
 import cv2
+import numpy
 
 if __name__ == '__main__':
 
@@ -29,17 +31,33 @@ if __name__ == '__main__':
         return f'#{r:02x}{g:02x}{b:02x}'
     
     ## BackEnd:
-    def show_image():
+
+    def read_image():
         url = image_info.get()
         name = image_name.get()
 
         full_name = url + '/' + name
 
         img = cv2.imread(full_name)
-        img_name = 'Imagen a Procesar'
+
+        return img
+
+    def transform_image(img):
+        input_image = cv2.resize(img, (48,48), interpolation=cv2.INTER_NEAREST).mean(axis=2).astype(numpy.ubyte)
+        input_x = numpy.reshape(input_image, (1, 48*48))
+        return input_image, input_x
+
+    def show_image():
+        img = read_image()
+        img_name = 'Imagen Orginal a Procesar'
+        img_input = 'Imagen a Procesar'
 
         cv2.imshow(img_name, img)
 
+        input_image, input_x = transform_image(img)
+        cv2.imshow(img_input, input_image)
+
+        print(input_x, input_x.shape)
 
     def show_result(age, ethnicity, gender):
         #Age:

@@ -59,7 +59,7 @@ pickle.dump(lin_reg, open(filename1, 'wb'))
 pond.extend([r2_score(y_test,y_pred_lin_reg)])
 
 ##Random Forest:
-rf = RandomForestRegressor(n_estimators=10)
+rf = RandomForestRegressor(n_estimators=100)
 rf.fit(set_2.drop(columns=['labels']), set_2.loc[:,'labels'])
 y_pred_rf = rf.predict(X_test)
 
@@ -72,7 +72,7 @@ pickle.dump(rf, open(filename2, 'wb'))
 pond.extend([r2_score(y_test,y_pred_rf)])
 
 ##Neural Network:
-nn = MLPRegressor(hidden_layer_sizes = (30,20,10), solver='adam', max_iter=10)
+nn = MLPRegressor(hidden_layer_sizes = (30,20,10), solver='adam', max_iter=10000)
 nn.fit(set_3.drop(columns=['labels']), set_3.loc[:,'labels'])
 y_pred_nn = nn.predict(X_test)
 
@@ -83,3 +83,7 @@ print('R-Squared :', r2_score(y_test,y_pred_nn))
 filename3 = 'nn_age.sav'
 pickle.dump(nn, open(filename3, 'wb'))
 pond.extend([r2_score(y_test,y_pred_nn)])
+
+#####################################################################
+##Store Weights:
+np.save('age_pred_weights', np.array(pond))
