@@ -44,7 +44,8 @@ if __name__ == '__main__':
 
     def transform_image(img):
         input_image = cv2.resize(img, (48,48), interpolation=cv2.INTER_NEAREST).mean(axis=2).astype(numpy.ubyte)
-        return input_image
+        input_x = numpy.reshape(input_image, (1, 48*48))
+        return input_image, input_x
 
     def show_image():
         img = read_image()
@@ -53,9 +54,10 @@ if __name__ == '__main__':
 
         cv2.imshow(img_name, img)
 
-        input_image = transform_image(img)
+        input_image, input_x = transform_image(img)
         cv2.imshow(img_input, input_image)
 
+        print(input_x, input_x.shape)
 
     def show_result(age, ethnicity, gender):
         #Age:
