@@ -108,7 +108,21 @@ if __name__ == '__main__':
 
         age_pred = (pred_age_1*ponderator[0] + pred_age_2*ponderator[1] + pred_age_3*ponderator[2]) / ponderator.sum()
 
+        print(pred_age_1,pred_age_2,pred_age_3)
+
         #Ethnicity:
+        eth_model_1 = pickle.load(open('../train/lr_ethnicity.sav', 'rb' ))
+        eth_model_2 = pickle.load(open( '../train/rf_ethnicity.sav', 'rb' ))
+        eth_model_3 = pickle.load(open( '../train/nn_ethnicity.sav', 'rb' ))
+
+        pred_eth_1 = int(eth_model_1.predict(input_x)[0])
+        pred_eth_2 = int(eth_model_2.predict(input_x)[0])
+        pred_eth_3 = int(eth_model_3.predict(input_x)[0])
+        temp = np.array([pred_eth_1,pred_eth_2,pred_eth_3])
+
+        eth_pred = stats.mode(temp)[0][0]
+
+        print(pred_eth_1,pred_eth_2,pred_eth_3)
         
         #Genders:
         gen_model_1 = pickle.load(open('../train/log_reg_gender.sav', 'rb' ))
@@ -122,10 +136,13 @@ if __name__ == '__main__':
 
         gen_pred = stats.mode(temp)[0][0]
 
+        print(pred_gen_1,pred_gen_2,pred_gen_3)
+
+        #Show Results:
         ethnicity = ['white','black','asian','indian','hispanic']
         genders = ['male','female']
 
-        show_result(age_pred, ethnicity[2], genders[gen_pred])
+        show_result(age_pred, ethnicity[eth_pred], genders[gen_pred])
 
         print('Done')
 
