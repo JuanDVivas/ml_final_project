@@ -1,3 +1,5 @@
 Execution Commands:
 
 Data: python .\bring_data.py .\age_gender.csv 100 110
+
+User: python .\user_gui.py ../train/tokenizer_mean.npy ../train/tokenizer_std.npy  ../train/lin_reg_age.sav ../train/rf_age.sav ../train/nn_age.sav ../train/age_pred_weights.npy 
