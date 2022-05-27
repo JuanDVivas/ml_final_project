@@ -11,7 +11,9 @@ except ImportError:
     from tkinter import ttk
 import sys
 import cv2
-import numpy
+import numpy as np
+from scipy import stats
+import pickle
 
 if __name__ == '__main__':
 
@@ -43,8 +45,8 @@ if __name__ == '__main__':
         return img
 
     def transform_image(img):
-        input_image = cv2.resize(img, (48,48), interpolation=cv2.INTER_NEAREST).mean(axis=2).astype(numpy.ubyte)
-        input_x = numpy.reshape(input_image, (1, 48*48))
+        input_image = cv2.resize(img, (48,48), interpolation=cv2.INTER_NEAREST).mean(axis=2).astype(np.ubyte)
+        input_x = np.reshape(input_image, (1, 48*48))
         return input_image, input_x
 
     def show_image():
@@ -82,18 +84,68 @@ if __name__ == '__main__':
         result_gen = Label(text = gender, bg='gray95', fg='gray60', width='15', height= '1', font=('Arial', 10, 'bold'))
         result_gen.place(x=525 , y=380)
 
+    def standardize(array, mean, std):
+        return (array - mean) / std
+
     def get_prediction():
-        url = image_info.get()
-        name = image_name.get()
+        img = read_image()
+        input_image, input_x = transform_image(img)
 
-        full_name = url + '/' + name
+        meanV = np.load(open( '../train/tokenizer_mean.npy', 'rb' ))
+        S = np.load(open( '../train/tokenizer_std.npy', 'rb' ))
 
+        input_x = standardize(input_x, meanV, S)
+
+        #Age
+        age_model_1 = pickle.load(open('../train/lin_reg_age.sav', 'rb' ))
+        age_model_2 = pickle.load(open( '../train/rf_age.sav', 'rb' ))
+        age_model_3 = pickle.load(open( '../train/nn_age.sav', 'rb' ))
+        ponderator = np.load(open( '../train/age_pred_weights.npy', 'rb' ))
+
+        pred_age_1 = age_model_1.predict(input_x)[0]
+        pred_age_2 = age_model_2.predict(input_x)[0]
+        pred_age_3 = age_model_3.predict(input_x)[0]
+
+        age_pred = (pred_age_1*ponderator[0] + pred_age_2*ponderator[1] + pred_age_3*ponderator[2]) / ponderator.sum()
+
+        print(pred_age_1,pred_age_2,pred_age_3)
+
+        #Ethnicity:
+        eth_model_1 = pickle.load(open('../train/lr_ethnicity.sav', 'rb' ))
+        eth_model_2 = pickle.load(open( '../train/rf_ethnicity.sav', 'rb' ))
+        eth_model_3 = pickle.load(open( '../train/nn_ethnicity.sav', 'rb' ))
+
+        pred_eth_1 = int(eth_model_1.predict(input_x)[0])
+        pred_eth_2 = int(eth_model_2.predict(input_x)[0])
+        pred_eth_3 = int(eth_model_3.predict(input_x)[0])
+        temp = np.array([pred_eth_1,pred_eth_2,pred_eth_3])
+
+        eth_pred = stats.mode(temp)[0][0]
+
+        print(pred_eth_1,pred_eth_2,pred_eth_3)
+        
+        #Genders:
+        gen_model_1 = pickle.load(open('../train/log_reg_gender.sav', 'rb' ))
+        gen_model_2 = pickle.load(open( '../train/svm_gender.sav', 'rb' ))
+        gen_model_3 = pickle.load(open( '../train/nn_gender.sav', 'rb' ))
+
+        pred_gen_1 = int(gen_model_1.predict(input_x)[0])
+        pred_gen_2 = int(gen_model_2.predict(input_x)[0])
+        pred_gen_3 = int(gen_model_3.predict(input_x)[0])
+        temp = np.array([pred_gen_1,pred_gen_2,pred_gen_3])
+
+        gen_pred = stats.mode(temp)[0][0]
+
+        print(pred_gen_1,pred_gen_2,pred_gen_3)
+
+        #Show Results:
         ethnicity = ['white','black','asian','indian','hispanic']
         genders = ['male','female']
 
-        show_result(34, ethnicity[2], genders[1])
+        show_result(age_pred, ethnicity[eth_pred], genders[gen_pred])
 
         print('Done')
+
         return 200
  
     ## GUI:

@@ -2,3 +2,5 @@
 /data/*.npy
 *.csv
 /data/*.csv
+*.jpg
+*.jpeg
