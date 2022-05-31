@@ -5,8 +5,10 @@ import sys
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_absolute_percentage_error, r2_score
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import mean_absolute_percentage_error, r2_score, accuracy_score
+from sklearn.metrics import classification_report,balanced_accuracy_score
+from sklearn.metrics import confusion_matrix
 import pickle
 
 #Load Data:
@@ -52,7 +54,6 @@ pond = []
 ##Logistic Regression:
 
 #train_gender.py x_train.npy  x_test.npy y_gender_train.npy y_gender_test.npy
-#train_age.py x_train.npy  x_test.npy y_age_train.npy y_age_test.npy
 
 num = 60000
 log_reg = LogisticRegression(solver = 'saga', l1_ratio = 0 ,penalty= 'elasticnet', max_iter = num)
@@ -60,8 +61,7 @@ log_reg.fit(set_1.drop(columns=['labels']), set_1.loc[:,'labels'])
 y_pred_log_reg = log_reg.predict(X_test)
 
 print('Regresión Logistica')
-print('MAPE: ',mean_absolute_percentage_error(y_test,y_pred_log_reg))
-print('R-Squared :', r2_score(y_test,y_pred_log_reg))
+print('Accuracy:', accuracy_score(y_test,y_pred_log_reg))
 
 filename1 = 'log_reg_gender.sav'
 pickle.dump(log_reg, open(filename1, 'wb'))
@@ -74,24 +74,23 @@ svm.fit(set_2.drop(columns=['labels']), set_2.loc[:,'labels'])
 y_pred_svm = svm.predict(X_test)
 
 print('SVM')
-print('MAPE: ',mean_absolute_percentage_error(y_test,y_pred_svm))
-print('R-Squared :', r2_score(y_test,y_pred_svm))
+print('Accuracy:', accuracy_score(y_test,y_pred_svm))
 
 filename2 = 'svm_gender.sav'
 pickle.dump(svm, open(filename2, 'wb'))
 pond.extend([r2_score(y_test,y_pred_svm)])
 
+
 ##Neural Network:
-nn = MLPRegressor(hidden_layer_sizes = (30,20,10), solver='adam', max_iter=10000)
+nn = MLPClassifier(hidden_layer_sizes = (30,20,10), solver='adam', max_iter=10000)
 nn.fit(set_3.drop(columns=['labels']), set_3.loc[:,'labels'])
 y_pred_nn = nn.predict(X_test)
 
 print('Neural Network')
-print('MAPE: ',mean_absolute_percentage_error(y_test,y_pred_nn))
-print('R-Squared :', r2_score(y_test,y_pred_nn))
-
+print('Accuracy:', accuracy_score(y_test,y_pred_log_reg))
+print('Balanced_accuracy :',  balanced_accuracy_score(y_test,y_pred_log_reg))
 filename3 = 'nn_gender.sav'
 pickle.dump(nn, open(filename3, 'wb'))
-pond.extend([r2_score(y_test,y_pred_nn)])
+pond.extend([accuracy_score(y_test,y_pred_nn)])
 
 
